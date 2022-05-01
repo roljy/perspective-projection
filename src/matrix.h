@@ -8,22 +8,32 @@ class Matrix
 {
 public:
     // constructor and destructor
-    Matrix(unsigned int rows, unsigned int cols);
+    Matrix(unsigned int rows, unsigned int cols, double value = 0);
     ~Matrix();
 
-    // access elements
+    // element getters
     double getElement(unsigned int row, unsigned int col);
     std::vector<double> getRow(unsigned int row);
     std::vector<double> getCol(unsigned int col);
     Matrix getSubset(unsigned int rowStart, unsigned int rowEnd,
         unsigned int colStart, unsigned int colEnd);
 
+    // element setters
+    int setElement(unsigned int row, unsigned int col, double value);
+    int setRow(unsigned int row, std::vector<double> &values);
+    int setCol(unsigned int col, std::vector<double> &values);
+    int setSubset(unsigned int rowStart, unsigned int colStart, Matrix &values);
+
     // basic matrix properties/actions
     unsigned int getNumOfRows();
     unsigned int getNumOfCols();
     double determinant();
     Matrix transpose();
-    Matrix inverse();
+    Matrix copy();
+
+    // logical functions
+    bool any();
+    bool all();
 
     // unary operator overloading
     Matrix operator+();
@@ -34,6 +44,7 @@ public:
     Matrix operator+(Matrix &other);
     Matrix operator-(Matrix &other);
     Matrix operator*(Matrix &other);
+    Matrix operator->*(Matrix &other);
 
     // binary logical operator overloading
     Matrix operator==(Matrix &other);
@@ -47,7 +58,7 @@ public:
 
     // other binary operator overloading
     Matrix operator=(Matrix &other);
-    Matrix operator>>(Matrix &other);
+    Matrix operator<<(Matrix &other);
     Matrix operator/(Matrix &other);
 
 private:
