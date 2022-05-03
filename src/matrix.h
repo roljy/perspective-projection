@@ -15,8 +15,8 @@ public:
     double getElement(size_t row, size_t col);
     std::vector<double> getRow(size_t row);
     std::vector<double> getCol(size_t col);
-    Matrix getSubset(size_t rowStart, size_t rowEnd,
-        size_t colStart, size_t colEnd);
+    Matrix getSubset(size_t rowStart, size_t colStart,
+        size_t rowEnd, size_t colEnd);
 
     // element setters
     int setElement(size_t row, size_t col, double value);
@@ -25,12 +25,11 @@ public:
     int setSubset(size_t rowStart, size_t colStart, Matrix &values);
 
     // basic matrix properties/actions
+    void print();
     size_t getNumOfRows();
     size_t getNumOfCols();
     double determinant();
     Matrix transpose();
-    Matrix copy();
-    void print();
 
     // logical functions
     bool any();

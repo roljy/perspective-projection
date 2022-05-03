@@ -66,3 +66,37 @@ std::vector<double> Matrix::getCol(size_t col)
 
     return ans;
 }
+
+
+Matrix Matrix::getSubset(size_t rowStart, size_t colStart,
+    size_t rowEnd, size_t colEnd)
+{
+    if (rowEnd <= rowStart || colEnd <= colStart ||
+        rowEnd > numOfRows || colEnd > numOfCols)
+        return Matrix();
+    
+    Matrix ans(rowEnd - rowStart, colEnd - colStart);
+    
+    for (size_t i = 0; i < rowEnd - rowStart; i++)
+        ans.setRow(i, elements[rowStart + i]);
+
+    return ans;
+}
+
+
+int Matrix::setElement(size_t row, size_t col, double value)
+{
+    if (row >= numOfRows || col >= numOfCols) return -1;
+
+    elements[row][col] = value;
+    return 0;
+}
+
+
+int Matrix::setRow(size_t row, std::vector<double> &values)
+{
+    if (row >= numOfRows) return -1;
+
+    elements[row] = values;
+    return 0;
+}
