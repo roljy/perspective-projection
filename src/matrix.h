@@ -8,28 +8,29 @@ class Matrix
 {
 public:
     // constructor and destructor
-    Matrix(unsigned int rows, unsigned int cols, double value = 0);
-    ~Matrix();
+    Matrix();
+    Matrix(size_t rows, size_t cols, double value = 0);
 
     // element getters
-    double getElement(unsigned int row, unsigned int col);
-    std::vector<double> getRow(unsigned int row);
-    std::vector<double> getCol(unsigned int col);
-    Matrix getSubset(unsigned int rowStart, unsigned int rowEnd,
-        unsigned int colStart, unsigned int colEnd);
+    double getElement(size_t row, size_t col);
+    std::vector<double> getRow(size_t row);
+    std::vector<double> getCol(size_t col);
+    Matrix getSubset(size_t rowStart, size_t rowEnd,
+        size_t colStart, size_t colEnd);
 
     // element setters
-    int setElement(unsigned int row, unsigned int col, double value);
-    int setRow(unsigned int row, std::vector<double> &values);
-    int setCol(unsigned int col, std::vector<double> &values);
-    int setSubset(unsigned int rowStart, unsigned int colStart, Matrix &values);
+    int setElement(size_t row, size_t col, double value);
+    int setRow(size_t row, std::vector<double> &values);
+    int setCol(size_t col, std::vector<double> &values);
+    int setSubset(size_t rowStart, size_t colStart, Matrix &values);
 
     // basic matrix properties/actions
-    unsigned int getNumOfRows();
-    unsigned int getNumOfCols();
+    size_t getNumOfRows();
+    size_t getNumOfCols();
     double determinant();
     Matrix transpose();
     Matrix copy();
+    void print();
 
     // logical functions
     bool any();
@@ -44,6 +45,7 @@ public:
     Matrix operator+(Matrix &other);
     Matrix operator-(Matrix &other);
     Matrix operator*(Matrix &other);
+    Matrix operator/(Matrix &other);
     Matrix operator->*(Matrix &other);
 
     // binary logical operator overloading
@@ -57,14 +59,13 @@ public:
     Matrix operator||(Matrix &other);
 
     // other binary operator overloading
-    Matrix operator=(Matrix &other);
     Matrix operator<<(Matrix &other);
-    Matrix operator/(Matrix &other);
+    Matrix operator>>(Matrix &other);
 
 private:
     std::vector< std::vector<double> > elements;
-    unsigned int numOfRows;
-    unsigned int numOfCols;
+    size_t numOfRows;
+    size_t numOfCols;
 };
 
 #endif  // SRC_MATRIX_H_

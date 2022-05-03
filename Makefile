@@ -1,22 +1,30 @@
 CXX = g++
 CXXFLAGS = -Wall -std=c++17
+DBFLAGS = -O1 -g
 
 SRC = src
 OBJ = obj
 BIN = bin
 
 SOURCES = $(wildcard $(SRC)/*.cpp)
-OBJECTS = $(patsubst $(SRC)/%.cpp, $(OBJ)/%.o, $(SOURCES))
+PROBJECTS = $(patsubst $(SRC)/%.cpp, $(OBJ)/pr_%.o, $(SOURCES))
+DBOBJECTS = $(patsubst $(SRC)/%.cpp, $(OBJ)/db_%.o, $(SOURCES))
 CURRENTDIR = $(notdir $(shell pwd))
 
-all: $(OBJECTS) $(BIN)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(BIN)/$(CURRENTDIR).out
+all: $(PROBJECTS) $(BIN)
+	$(CXX) $(CXXFLAGS) $(PROBJECTS) -o $(BIN)/$(CURRENTDIR).out
+
+debug: $(DBOBJECTS) $(BIN)
+	$(CXX) $(CXXFLAGS) $(DBFLAGS) $(DBOBJECTS) -o $(BIN)/db_$(CURRENTDIR).out
 
 $(BIN):
 	mkdir -p bin
 
-$(OBJ)/%.o: $(SRC)/%.cpp $(OBJ)
-	$(CXX) -I$(SRC) -c $< -o $@
+$(OBJ)/pr_%.o: $(SRC)/%.cpp $(OBJ)
+	$(CXX) $(CXXFLAGS) -I$(SRC) -c $< -o $@
+
+$(OBJ)/db_%.o: $(SRC)/%.cpp $(OBJ)
+	$(CXX) $(CXXFLAGS) $(DBFLAGS) -I$(SRC) -c $< -o $@
 
 $(OBJ):
 	mkdir -p obj
