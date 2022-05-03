@@ -4,6 +4,9 @@
 #include "matrix.h"
 
 
+/*--------------------------------CONSTRUCTORS--------------------------------*/
+
+
 Matrix::Matrix()
 {
     numOfRows = 1;
@@ -28,15 +31,7 @@ Matrix::Matrix(size_t rows, size_t cols, double value)
 }
 
 
-void Matrix::print()
-{
-    for (size_t i = 0; i < numOfRows; i++)
-    {
-        for (size_t j = 0; j < numOfCols; j++)
-            std::cout << elements[i][j] << ' ';
-        std::cout << std::endl;
-    }
-}
+/*-----------------------------------GETTERS----------------------------------*/
 
 
 double Matrix::getElement(size_t row, size_t col)
@@ -45,16 +40,10 @@ double Matrix::getElement(size_t row, size_t col)
 }
 
 
-size_t Matrix::getNumOfRows() { return numOfRows; }
-
-
 std::vector<double> Matrix::getRow(size_t row)
 {
     return elements[row];
 }
-
-
-size_t Matrix::getNumOfCols() { return numOfCols; }
 
 
 std::vector<double> Matrix::getCol(size_t col)
@@ -78,10 +67,14 @@ Matrix Matrix::getSubset(size_t rowStart, size_t colStart,
     Matrix ans(rowEnd - rowStart, colEnd - colStart);
     
     for (size_t i = 0; i < rowEnd - rowStart; i++)
-        ans.setRow(i, elements[rowStart + i]);
+        for (size_t j = 0; j < colEnd - colStart; j++)
+            ans.setElement(i, j, elements[rowStart + i][colStart + j]);
 
     return ans;
 }
+
+
+/*-----------------------------------SETTERS----------------------------------*/
 
 
 int Matrix::setElement(size_t row, size_t col, double value)
@@ -95,8 +88,50 @@ int Matrix::setElement(size_t row, size_t col, double value)
 
 int Matrix::setRow(size_t row, std::vector<double> &values)
 {
-    if (row >= numOfRows) return -1;
+    if (row >= numOfRows || values.size() != numOfCols) return -1;
 
     elements[row] = values;
     return 0;
 }
+
+
+int Matrix::setCol(size_t col, std::vector<double> &values)
+{
+    if (col >= numOfCols || values.size() != numOfRows) return -1;
+
+    for (size_t i = 0; i < numOfRows; i++)
+        elements[i][col] = values[i];
+    return 0;
+}
+
+
+int Matrix::setSubset(size_t rowStart, size_t colStart, Matrix &values)
+{
+    if(rowStart + values.getNumOfRows() > numOfRows ||
+        colStart + values.getNumOfCols() > numOfCols) return -1;
+
+    for (size_t i = 0; i < values.getNumOfRows(); i++)
+        for (size_t j = 0; j < values.getNumOfCols(); j++)
+            elements[rowStart + i][colStart + j] = values.getElement(i, j);
+    return 0;
+}
+
+
+/*--------------------------BASIC PROPERTIES/ACTIONS--------------------------*/
+
+
+void Matrix::print()
+{
+    for (size_t i = 0; i < numOfRows; i++)
+    {
+        for (size_t j = 0; j < numOfCols; j++)
+            std::cout << elements[i][j] << ' ';
+        std::cout << std::endl;
+    }
+}
+
+
+size_t Matrix::getNumOfRows() { return numOfRows; }
+
+
+size_t Matrix::getNumOfCols() { return numOfCols; }

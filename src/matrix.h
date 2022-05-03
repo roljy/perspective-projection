@@ -7,7 +7,7 @@
 class Matrix
 {
 public:
-    // constructor and destructor
+    // constructors
     Matrix();
     Matrix(size_t rows, size_t cols, double value = 0);
 
