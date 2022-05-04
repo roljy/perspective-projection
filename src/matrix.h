@@ -44,7 +44,9 @@ public:
     Matrix operator+(Matrix &other);
     Matrix operator-(Matrix &other);
     Matrix operator*(Matrix &other);
+    Matrix operator*(double scalar);
     Matrix operator/(Matrix &other);
+    Matrix operator/(double scalar);
     Matrix operator->*(Matrix &other);
 
     // binary logical operator overloading

@@ -1,6 +1,8 @@
 // matrix.cpp
 
 #include <iostream>
+#include <numeric>
+#include <vector>
 #include "matrix.h"
 
 
@@ -217,7 +219,6 @@ Matrix Matrix::operator-()
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, -elements[i][j]);
-
     return ans;
 }
 
@@ -228,7 +229,108 @@ Matrix Matrix::operator!()
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, !elements[i][j]);
+    return ans;
+}
 
+
+/*-------------------------BINARY ARITHMETIC OPERATORS-----------------------*/
+
+
+Matrix Matrix::operator+(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] + other.getElement(i, j));
+    return ans;
+}
+
+
+Matrix Matrix::operator-(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] - other.getElement(i, j));
+    return ans;
+}
+
+
+Matrix Matrix::operator*(Matrix &other)
+{
+    // elementwise multiplication
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] * other.getElement(i, j));
+    return ans;
+}
+
+
+Matrix Matrix::operator*(double scalar)
+{
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] * scalar);
+    return ans;
+}
+
+
+Matrix Matrix::operator/(Matrix &other)
+{
+    // elementwise division
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+        {
+            if (!other.getElement(i, j)) return *this;  // division by 0
+
+            ans.setElement(i, j, elements[i][j] / other.getElement(i, j));
+        }
+    return ans;
+}
+
+
+Matrix Matrix::operator/(double scalar)
+{
+    if (!scalar) return *this;  // division by 0
+
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] / scalar);
+    return ans;
+}
+
+
+Matrix Matrix::operator->*(Matrix &other)
+{
+    // matrix multiplication
+    if (numOfCols != other.getNumOfRows())
+        return *this;
+
+    Matrix ans(numOfRows, other.getNumOfCols());
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < other.getNumOfCols(); j++)
+        {
+            std::vector<double> row = elements[i];
+            std::vector<double> col = other.getCol(j);
+            ans.setElement(i, j,
+                std::inner_product(row.begin(), row.end(), col.begin(), 0));
+        }
     return ans;
 }
 
