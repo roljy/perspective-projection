@@ -9,8 +9,8 @@
 
 Matrix::Matrix()
 {
-    numOfRows = 1;
-    numOfCols = 1;
+    numOfRows = 0;
+    numOfCols = 0;
     elements = std::vector< std::vector<double> > ( numOfRows,
         std::vector<double> (numOfCols, 0) );
 }
@@ -36,18 +36,24 @@ Matrix::Matrix(size_t rows, size_t cols, double value)
 
 double Matrix::getElement(size_t row, size_t col)
 {
+    if (row >= numOfRows || col >= numOfCols) return 0;
+
     return elements[row][col];
 }
 
 
 std::vector<double> Matrix::getRow(size_t row)
 {
+    if (row >= numOfRows) return std::vector<double>(numOfCols, 0);
+
     return elements[row];
 }
 
 
 std::vector<double> Matrix::getCol(size_t col)
 {
+    if (col >= numOfCols) return std::vector<double>(numOfRows, 0);
+
     std::vector<double> ans(numOfRows, 0);
 
     for (size_t i = 0; i < numOfRows; i++)
@@ -60,7 +66,7 @@ std::vector<double> Matrix::getCol(size_t col)
 Matrix Matrix::getSubset(size_t rowStart, size_t colStart,
     size_t rowEnd, size_t colEnd)
 {
-    if (rowEnd <= rowStart || colEnd <= colStart ||
+    if (rowEnd < rowStart || colEnd < colStart ||
         rowEnd > numOfRows || colEnd > numOfCols)
         return Matrix();
     
@@ -135,3 +141,66 @@ size_t Matrix::getNumOfRows() { return numOfRows; }
 
 
 size_t Matrix::getNumOfCols() { return numOfCols; }
+
+
+double Matrix::determinant()
+{
+    if (numOfRows != numOfCols) return 0;
+    
+    switch (numOfRows)
+    {
+    case 0:
+        return 0;
+    case 1:
+        return elements[0][0];
+    case 2:
+        return elements[0][0]*elements[1][1] - elements[0][1]*elements[1][0];
+    default:
+        double ans = 0;
+        for (size_t j = 0; j < numOfCols; j++)
+        {
+            Matrix leftRemaining = getSubset(1, 0, numOfRows, j);
+            Matrix rightRemaining = getSubset(1, j+1, numOfRows, numOfCols);
+            Matrix remaining = leftRemaining << rightRemaining;
+            double currentVal = elements[0][j];
+            ans += (j%2 ? -currentVal : currentVal) * remaining.determinant();
+        }
+        return ans;
+    }
+}
+
+
+Matrix Matrix::transpose()
+{
+    Matrix ans(numOfCols, numOfRows);
+    for (size_t j = 0; j < numOfRows; j++)
+        ans.setCol(j, elements[j]);
+    return ans;
+}
+
+
+/*----------------------------OTHER BINARY OPERATORS--------------------------*/
+
+
+Matrix Matrix::operator<<(Matrix &other)
+{
+    // right concatenation
+    if (numOfRows != other.getNumOfRows()) return *this;
+
+    Matrix ans(numOfRows, numOfCols + other.getNumOfCols());
+    ans.setSubset(0, 0, *this);
+    ans.setSubset(0, numOfCols, other);
+    return ans;
+}
+
+
+Matrix Matrix::operator>>(Matrix &other)
+{
+    // bottom concatenation
+    if (numOfCols != other.getNumOfCols()) return *this;
+
+    Matrix ans(numOfRows + other.getNumOfRows(), numOfCols);
+    ans.setSubset(0, 0, *this);
+    ans.setSubset(numOfRows, 0, other);
+    return ans;
+}
