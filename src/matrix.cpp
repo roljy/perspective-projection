@@ -179,6 +179,60 @@ Matrix Matrix::transpose()
 }
 
 
+/*------------------------------LOGICAL FUNCTIONS-----------------------------*/
+
+
+bool Matrix::any()
+{
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            if (elements[i][j]) return true;
+
+    return false;
+}
+
+
+bool Matrix::all()
+{
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            if (!elements[i][j]) return false;
+
+    return true;
+}
+
+
+/*-------------------------------UNARY OPERATORS------------------------------*/
+
+
+Matrix Matrix::operator+()
+{
+    return *this;
+}
+
+
+Matrix Matrix::operator-()
+{
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, -elements[i][j]);
+
+    return ans;
+}
+
+
+Matrix Matrix::operator!()
+{
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, !elements[i][j]);
+
+    return ans;
+}
+
+
 /*----------------------------OTHER BINARY OPERATORS--------------------------*/
 
 
