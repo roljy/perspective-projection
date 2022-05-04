@@ -335,6 +335,105 @@ Matrix Matrix::operator->*(Matrix &other)
 }
 
 
+/*---------------------------BINARY LOGICAL OPERATORS-------------------------*/
+
+
+Matrix Matrix::operator==(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] == other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator!=(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] != other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator<(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] < other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator<=(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] <= other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator>(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] > other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator>=(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] >= other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator&&(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] && other.getElement(i, j));
+}
+
+
+Matrix Matrix::operator||(Matrix &other)
+{
+    if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
+        return *this;
+
+    Matrix ans(numOfRows, numOfCols);
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j, elements[i][j] || other.getElement(i, j));
+}
+
+
 /*----------------------------OTHER BINARY OPERATORS--------------------------*/
 
 
