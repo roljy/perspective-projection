@@ -204,6 +204,77 @@ bool Matrix::all()
 }
 
 
+/*-----------------------------COLUMNWISE FUNCTIONS---------------------------*/
+
+
+std::vector<double> Matrix::min(int colwise)
+{
+    std::vector<double> ans = colwise ? getRow(0) : getCol(0);
+    
+    if (colwise)
+        for (size_t j = 0; j < numOfCols; j++)
+            for (size_t i = 0; i < numOfRows; i++)
+                ans[j] = elements[i][j] < ans[j] ? elements[i][j] : ans[j];
+    else
+        for (size_t i = 0; i < numOfRows; i++)
+            for (size_t j = 0; j < numOfCols; j++)
+                ans[i] = elements[i][j] < ans[i] ? elements[i][j] : ans[i];
+
+    return ans;
+}
+
+
+std::vector<double> Matrix::max(int colwise)
+{
+    std::vector<double> ans = colwise ? getRow(0) : getCol(0);
+    
+    if (colwise)
+        for (size_t j = 0; j < numOfCols; j++)
+            for (size_t i = 0; i < numOfRows; i++)
+                ans[j] = elements[i][j] > ans[j] ? elements[i][j] : ans[j];
+    else
+        for (size_t i = 0; i < numOfRows; i++)
+            for (size_t j = 0; j < numOfCols; j++)
+                ans[i] = elements[i][j] > ans[i] ? elements[i][j] : ans[i];
+
+    return ans;
+}
+
+
+std::vector<double> Matrix::sum(int colwise)
+{
+    std::vector<double> ans( colwise ? numOfCols : numOfRows, 0 );
+    
+    if (colwise)
+        for (size_t j = 0; j < numOfCols; j++)
+            for (size_t i = 0; i < numOfRows; i++)
+                ans[j] += elements[i][j];
+    else
+        for (size_t i = 0; i < numOfRows; i++)
+            for (size_t j = 0; j < numOfCols; j++)
+                ans[i] += elements[i][j];
+
+    return ans;
+}
+
+
+std::vector<double> Matrix::prod(int colwise)
+{
+    std::vector<double> ans( colwise ? numOfCols : numOfRows, 1 );
+    
+    if (colwise)
+        for (size_t j = 0; j < numOfCols; j++)
+            for (size_t i = 0; i < numOfRows; i++)
+                ans[j] *= elements[i][j];
+    else
+        for (size_t i = 0; i < numOfRows; i++)
+            for (size_t j = 0; j < numOfCols; j++)
+                ans[i] *= elements[i][j];
+
+    return ans;
+}
+
+
 /*-------------------------------UNARY OPERATORS------------------------------*/
 
 
@@ -347,6 +418,7 @@ Matrix Matrix::operator==(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] == other.getElement(i, j));
+    return ans;
 }
 
 
@@ -359,6 +431,7 @@ Matrix Matrix::operator!=(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] != other.getElement(i, j));
+    return ans;
 }
 
 
@@ -371,6 +444,7 @@ Matrix Matrix::operator<(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] < other.getElement(i, j));
+    return ans;
 }
 
 
@@ -383,6 +457,7 @@ Matrix Matrix::operator<=(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] <= other.getElement(i, j));
+    return ans;
 }
 
 
@@ -395,6 +470,7 @@ Matrix Matrix::operator>(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] > other.getElement(i, j));
+    return ans;
 }
 
 
@@ -407,6 +483,7 @@ Matrix Matrix::operator>=(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] >= other.getElement(i, j));
+    return ans;
 }
 
 
@@ -419,6 +496,7 @@ Matrix Matrix::operator&&(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] && other.getElement(i, j));
+    return ans;
 }
 
 
@@ -431,6 +509,7 @@ Matrix Matrix::operator||(Matrix &other)
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] || other.getElement(i, j));
+    return ans;
 }
 
 

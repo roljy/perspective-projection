@@ -35,6 +35,12 @@ public:
     bool any();
     bool all();
 
+    // helpful column/row info functions
+    std::vector<double> min(int colwise = true);
+    std::vector<double> max(int colwise = true);
+    std::vector<double> sum(int colwise = true);
+    std::vector<double> prod(int colwise = true);
+
     // unary operator overloading
     Matrix operator+();
     Matrix operator-();
