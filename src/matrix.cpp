@@ -1,8 +1,10 @@
 // matrix.cpp
 
 #include <iostream>
-#include <numeric>
 #include <vector>
+#include <cmath>
+#include <algorithm>
+#include <numeric>
 #include "matrix.h"
 
 
@@ -128,12 +130,32 @@ int Matrix::setSubset(size_t rowStart, size_t colStart, Matrix &values)
 /*--------------------------BASIC PROPERTIES/ACTIONS--------------------------*/
 
 
-void Matrix::print()
+void Matrix::print(unsigned int precision)
 {
+    std::vector<double> maxVals = max();
+    std::vector<double> minVals = min();
+    double maxVal = *std::max_element(maxVals.begin(), maxVals.end());
+    double minVal = *std::min_element(minVals.begin(), minVals.end());
+    if (minVal < 0)
+    {
+        if ( (maxVal < 0) || ((minVal < 0 ? -minVal : minVal) * 10 > maxVal) )
+            maxVal = minVal;
+    }
+
+    double absMax = maxVal < 0 ? -maxVal : maxVal;
+    unsigned int width = 1;
+    while (absMax >= 10)
+    {
+        absMax /= 10;
+        width++;  // each place value greater than ones
+    }
+    if (maxVal < 0) width++;  // negative sign
+    width += precision + (precision ? 1 : 0);  // decimal point and after
+
     for (size_t i = 0; i < numOfRows; i++)
     {
         for (size_t j = 0; j < numOfCols; j++)
-            std::cout << elements[i][j] << ' ';
+            printf(" %*.*f ", width, precision, elements[i][j]);
         std::cout << std::endl;
     }
 }
@@ -177,6 +199,17 @@ Matrix Matrix::transpose()
     Matrix ans(numOfCols, numOfRows);
     for (size_t j = 0; j < numOfRows; j++)
         ans.setCol(j, elements[j]);
+    return ans;
+}
+
+
+Matrix Matrix::absolute()
+{
+    Matrix ans = *this;
+    for (size_t i = 0; i < numOfRows; i++)
+        for (size_t j = 0; j < numOfCols; j++)
+            ans.setElement(i, j,
+                elements[i][j] < 0 ? -elements[i][j] : elements[i][j]);
     return ans;
 }
 

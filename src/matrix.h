@@ -25,11 +25,12 @@ public:
     int setSubset(size_t rowStart, size_t colStart, Matrix &values);
 
     // basic matrix properties/actions
-    void print();
+    void print(unsigned int precision = 0);
     size_t getNumOfRows();
     size_t getNumOfCols();
     double determinant();
     Matrix transpose();
+    Matrix absolute();
 
     // logical functions
     bool any();
