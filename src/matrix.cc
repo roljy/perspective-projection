@@ -1,4 +1,7 @@
-// matrix.cpp
+// matrix.cc
+
+#ifndef SRC_MATRIX_CC_
+#define SRC_MATRIX_CC_
 
 #include <iostream>
 #include <vector>
@@ -142,6 +145,8 @@ int Matrix<T>::setSubset(size_t rowStart, size_t colStart, Matrix<T> &values)
 template <class T>
 void Matrix<T>::print(unsigned int precision)
 {
+    if (!numOfRows || !numOfCols) return;
+
     std::vector<T> maxVals = max();
     std::vector<T> minVals = min();
     T maxVal = *std::max_element(maxVals.begin(), maxVals.end());
@@ -612,3 +617,5 @@ Matrix<T> Matrix<T>::operator>>(Matrix<T> &other)
     ans.setSubset(numOfRows, 0, other);
     return ans;
 }
+
+#endif  // SRC_MATRIX_CC_

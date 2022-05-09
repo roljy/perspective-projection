@@ -79,4 +79,6 @@ public:
     Matrix operator>>(Matrix &other);
 };
 
+#include "matrix.cc"
+
 #endif  // SRC_MATRIX_H_
