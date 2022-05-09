@@ -10,16 +10,18 @@
 /*--------------------------------CONSTRUCTORS--------------------------------*/
 
 
-Matrix::Matrix()
+template <class T>
+Matrix<T>::Matrix()
 {
     numOfRows = 0;
     numOfCols = 0;
-    elements = std::vector< std::vector<double> > ( numOfRows,
-        std::vector<double> (numOfCols, 0) );
+    elements = std::vector< std::vector<T> > ( numOfRows,
+        std::vector<T> (numOfCols, 0) );
 }
 
 
-Matrix::Matrix(size_t rows, size_t cols, double value)
+template <class T>
+Matrix<T>::Matrix(size_t rows, size_t cols, T value)
 {
     numOfRows = rows;
     numOfCols = cols;
@@ -37,7 +39,8 @@ Matrix::Matrix(size_t rows, size_t cols, double value)
 /*-----------------------------------GETTERS----------------------------------*/
 
 
-double Matrix::getElement(size_t row, size_t col)
+template <class T>
+T Matrix<T>::getElement(size_t row, size_t col)
 {
     if (row >= numOfRows || col >= numOfCols) return 0;
 
@@ -45,19 +48,21 @@ double Matrix::getElement(size_t row, size_t col)
 }
 
 
-std::vector<double> Matrix::getRow(size_t row)
+template <class T>
+std::vector<T> Matrix<T>::getRow(size_t row)
 {
-    if (row >= numOfRows) return std::vector<double>(numOfCols, 0);
+    if (row >= numOfRows) return std::vector<T>(numOfCols, 0);
 
     return elements[row];
 }
 
 
-std::vector<double> Matrix::getCol(size_t col)
+template <class T>
+std::vector<T> Matrix<T>::getCol(size_t col)
 {
-    if (col >= numOfCols) return std::vector<double>(numOfRows, 0);
+    if (col >= numOfCols) return std::vector<T>(numOfRows, 0);
 
-    std::vector<double> ans(numOfRows, 0);
+    std::vector<T> ans(numOfRows, 0);
 
     for (size_t i = 0; i < numOfRows; i++)
         ans[i] = elements[i][col];
@@ -66,14 +71,15 @@ std::vector<double> Matrix::getCol(size_t col)
 }
 
 
-Matrix Matrix::getSubset(size_t rowStart, size_t colStart,
+template <class T>
+Matrix<T> Matrix<T>::getSubset(size_t rowStart, size_t colStart,
     size_t rowEnd, size_t colEnd)
 {
     if (rowEnd < rowStart || colEnd < colStart ||
         rowEnd > numOfRows || colEnd > numOfCols)
-        return Matrix();
+        return Matrix<T>();
     
-    Matrix ans(rowEnd - rowStart, colEnd - colStart);
+    Matrix<T> ans(rowEnd - rowStart, colEnd - colStart);
     
     for (size_t i = 0; i < rowEnd - rowStart; i++)
         for (size_t j = 0; j < colEnd - colStart; j++)
@@ -86,7 +92,8 @@ Matrix Matrix::getSubset(size_t rowStart, size_t colStart,
 /*-----------------------------------SETTERS----------------------------------*/
 
 
-int Matrix::setElement(size_t row, size_t col, double value)
+template <class T>
+int Matrix<T>::setElement(size_t row, size_t col, T value)
 {
     if (row >= numOfRows || col >= numOfCols) return -1;
 
@@ -95,7 +102,8 @@ int Matrix::setElement(size_t row, size_t col, double value)
 }
 
 
-int Matrix::setRow(size_t row, std::vector<double> &values)
+template <class T>
+int Matrix<T>::setRow(size_t row, std::vector<T> &values)
 {
     if (row >= numOfRows || values.size() != numOfCols) return -1;
 
@@ -104,7 +112,8 @@ int Matrix::setRow(size_t row, std::vector<double> &values)
 }
 
 
-int Matrix::setCol(size_t col, std::vector<double> &values)
+template <class T>
+int Matrix<T>::setCol(size_t col, std::vector<T> &values)
 {
     if (col >= numOfCols || values.size() != numOfRows) return -1;
 
@@ -114,7 +123,8 @@ int Matrix::setCol(size_t col, std::vector<double> &values)
 }
 
 
-int Matrix::setSubset(size_t rowStart, size_t colStart, Matrix &values)
+template <class T>
+int Matrix<T>::setSubset(size_t rowStart, size_t colStart, Matrix<T> &values)
 {
     if(rowStart + values.getNumOfRows() > numOfRows ||
         colStart + values.getNumOfCols() > numOfCols) return -1;
@@ -129,19 +139,20 @@ int Matrix::setSubset(size_t rowStart, size_t colStart, Matrix &values)
 /*--------------------------BASIC PROPERTIES/ACTIONS--------------------------*/
 
 
-void Matrix::print(unsigned int precision)
+template <class T>
+void Matrix<T>::print(unsigned int precision)
 {
-    std::vector<double> maxVals = max();
-    std::vector<double> minVals = min();
-    double maxVal = *std::max_element(maxVals.begin(), maxVals.end());
-    double minVal = *std::min_element(minVals.begin(), minVals.end());
+    std::vector<T> maxVals = max();
+    std::vector<T> minVals = min();
+    T maxVal = *std::max_element(maxVals.begin(), maxVals.end());
+    T minVal = *std::min_element(minVals.begin(), minVals.end());
     if (minVal < 0)
     {
         if ( (maxVal < 0) || ((minVal < 0 ? -minVal : minVal) * 10 > maxVal) )
             maxVal = minVal;
     }
 
-    double absMax = maxVal < 0 ? -maxVal : maxVal;
+    T absMax = maxVal < 0 ? -maxVal : maxVal;
     unsigned int width = 1;
     while (absMax >= 10)
     {
@@ -160,13 +171,16 @@ void Matrix::print(unsigned int precision)
 }
 
 
-size_t Matrix::getNumOfRows() { return numOfRows; }
+template <class T>
+size_t Matrix<T>::getNumOfRows() { return numOfRows; }
 
 
-size_t Matrix::getNumOfCols() { return numOfCols; }
+template <class T>
+size_t Matrix<T>::getNumOfCols() { return numOfCols; }
 
 
-double Matrix::determinant()
+template <class T>
+T Matrix<T>::determinant()
 {
     if (numOfRows != numOfCols) return 0;
     
@@ -179,13 +193,13 @@ double Matrix::determinant()
     case 2:
         return elements[0][0]*elements[1][1] - elements[0][1]*elements[1][0];
     default:
-        double ans = 0;
+        T ans = 0;
         for (size_t j = 0; j < numOfCols; j++)
         {
-            Matrix leftRemaining = getSubset(1, 0, numOfRows, j);
-            Matrix rightRemaining = getSubset(1, j+1, numOfRows, numOfCols);
-            Matrix remaining = leftRemaining << rightRemaining;
-            double currentVal = elements[0][j];
+            Matrix<T> leftRemaining = getSubset(1, 0, numOfRows, j);
+            Matrix<T> rightRemaining = getSubset(1, j+1, numOfRows, numOfCols);
+            Matrix<T> remaining = leftRemaining << rightRemaining;
+            T currentVal = elements[0][j];
             ans += (j%2 ? -currentVal : currentVal) * remaining.determinant();
         }
         return ans;
@@ -193,18 +207,20 @@ double Matrix::determinant()
 }
 
 
-Matrix Matrix::transpose()
+template <class T>
+Matrix<T> Matrix<T>::transpose()
 {
-    Matrix ans(numOfCols, numOfRows);
+    Matrix<T> ans(numOfCols, numOfRows);
     for (size_t j = 0; j < numOfRows; j++)
         ans.setCol(j, elements[j]);
     return ans;
 }
 
 
-Matrix Matrix::absolute()
+template <class T>
+Matrix<T> Matrix<T>::absolute()
 {
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j,
@@ -216,7 +232,8 @@ Matrix Matrix::absolute()
 /*------------------------------LOGICAL FUNCTIONS-----------------------------*/
 
 
-bool Matrix::any()
+template <class T>
+bool Matrix<T>::any()
 {
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
@@ -226,7 +243,8 @@ bool Matrix::any()
 }
 
 
-bool Matrix::all()
+template <class T>
+bool Matrix<T>::all()
 {
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
@@ -239,9 +257,10 @@ bool Matrix::all()
 /*-----------------------------COLUMNWISE FUNCTIONS---------------------------*/
 
 
-std::vector<double> Matrix::min(int colwise)
+template <class T>
+std::vector<T> Matrix<T>::min(int colwise)
 {
-    std::vector<double> ans = colwise ? getRow(0) : getCol(0);
+    std::vector<T> ans = colwise ? getRow(0) : getCol(0);
     
     if (colwise)
         for (size_t j = 0; j < numOfCols; j++)
@@ -256,9 +275,10 @@ std::vector<double> Matrix::min(int colwise)
 }
 
 
-std::vector<double> Matrix::max(int colwise)
+template <class T>
+std::vector<T> Matrix<T>::max(int colwise)
 {
-    std::vector<double> ans = colwise ? getRow(0) : getCol(0);
+    std::vector<T> ans = colwise ? getRow(0) : getCol(0);
     
     if (colwise)
         for (size_t j = 0; j < numOfCols; j++)
@@ -273,9 +293,10 @@ std::vector<double> Matrix::max(int colwise)
 }
 
 
-std::vector<double> Matrix::sum(int colwise)
+template <class T>
+std::vector<T> Matrix<T>::sum(int colwise)
 {
-    std::vector<double> ans( colwise ? numOfCols : numOfRows, 0 );
+    std::vector<T> ans( colwise ? numOfCols : numOfRows, 0 );
     
     if (colwise)
         for (size_t j = 0; j < numOfCols; j++)
@@ -290,9 +311,10 @@ std::vector<double> Matrix::sum(int colwise)
 }
 
 
-std::vector<double> Matrix::prod(int colwise)
+template <class T>
+std::vector<T> Matrix<T>::prod(int colwise)
 {
-    std::vector<double> ans( colwise ? numOfCols : numOfRows, 1 );
+    std::vector<T> ans( colwise ? numOfCols : numOfRows, 1 );
     
     if (colwise)
         for (size_t j = 0; j < numOfCols; j++)
@@ -310,15 +332,17 @@ std::vector<double> Matrix::prod(int colwise)
 /*-------------------------------UNARY OPERATORS------------------------------*/
 
 
-Matrix Matrix::operator+()
+template <class T>
+Matrix<T> Matrix<T>::operator+()
 {
     return *this;
 }
 
 
-Matrix Matrix::operator-()
+template <class T>
+Matrix<T> Matrix<T>::operator-()
 {
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, -elements[i][j]);
@@ -326,9 +350,10 @@ Matrix Matrix::operator-()
 }
 
 
-Matrix Matrix::operator!()
+template <class T>
+Matrix<T> Matrix<T>::operator!()
 {
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, !elements[i][j]);
@@ -339,12 +364,13 @@ Matrix Matrix::operator!()
 /*-------------------------BINARY ARITHMETIC OPERATORS-----------------------*/
 
 
-Matrix Matrix::operator+(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator+(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] + other.getElement(i, j));
@@ -352,12 +378,13 @@ Matrix Matrix::operator+(Matrix &other)
 }
 
 
-Matrix Matrix::operator-(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator-(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] - other.getElement(i, j));
@@ -365,13 +392,14 @@ Matrix Matrix::operator-(Matrix &other)
 }
 
 
-Matrix Matrix::operator*(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator*(Matrix<T> &other)
 {
     // elementwise multiplication
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] * other.getElement(i, j));
@@ -379,9 +407,10 @@ Matrix Matrix::operator*(Matrix &other)
 }
 
 
-Matrix Matrix::operator*(double scalar)
+template <class T>
+Matrix<T> Matrix<T>::operator*(T scalar)
 {
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] * scalar);
@@ -389,13 +418,14 @@ Matrix Matrix::operator*(double scalar)
 }
 
 
-Matrix Matrix::operator/(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator/(Matrix<T> &other)
 {
     // elementwise division
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
         {
@@ -407,11 +437,12 @@ Matrix Matrix::operator/(Matrix &other)
 }
 
 
-Matrix Matrix::operator/(double scalar)
+template <class T>
+Matrix<T> Matrix<T>::operator/(T scalar)
 {
     if (!scalar) return *this;  // division by 0
 
-    Matrix ans = *this;
+    Matrix<T> ans = *this;
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] / scalar);
@@ -419,18 +450,19 @@ Matrix Matrix::operator/(double scalar)
 }
 
 
-Matrix Matrix::operator->*(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator->*(Matrix<T> &other)
 {
     // matrix multiplication
     if (numOfCols != other.getNumOfRows())
         return *this;
 
-    Matrix ans(numOfRows, other.getNumOfCols());
+    Matrix<T> ans(numOfRows, other.getNumOfCols());
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < other.getNumOfCols(); j++)
         {
-            std::vector<double> row = elements[i];
-            std::vector<double> col = other.getCol(j);
+            std::vector<T> row = elements[i];
+            std::vector<T> col = other.getCol(j);
             ans.setElement(i, j,
                 std::inner_product(row.begin(), row.end(), col.begin(), 0));
         }
@@ -441,12 +473,13 @@ Matrix Matrix::operator->*(Matrix &other)
 /*---------------------------BINARY LOGICAL OPERATORS-------------------------*/
 
 
-Matrix Matrix::operator==(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator==(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] == other.getElement(i, j));
@@ -454,12 +487,13 @@ Matrix Matrix::operator==(Matrix &other)
 }
 
 
-Matrix Matrix::operator!=(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator!=(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] != other.getElement(i, j));
@@ -467,12 +501,13 @@ Matrix Matrix::operator!=(Matrix &other)
 }
 
 
-Matrix Matrix::operator<(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator<(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] < other.getElement(i, j));
@@ -480,12 +515,13 @@ Matrix Matrix::operator<(Matrix &other)
 }
 
 
-Matrix Matrix::operator<=(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator<=(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] <= other.getElement(i, j));
@@ -493,12 +529,13 @@ Matrix Matrix::operator<=(Matrix &other)
 }
 
 
-Matrix Matrix::operator>(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator>(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] > other.getElement(i, j));
@@ -506,12 +543,13 @@ Matrix Matrix::operator>(Matrix &other)
 }
 
 
-Matrix Matrix::operator>=(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator>=(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] >= other.getElement(i, j));
@@ -519,12 +557,13 @@ Matrix Matrix::operator>=(Matrix &other)
 }
 
 
-Matrix Matrix::operator&&(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator&&(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] && other.getElement(i, j));
@@ -532,12 +571,13 @@ Matrix Matrix::operator&&(Matrix &other)
 }
 
 
-Matrix Matrix::operator||(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator||(Matrix<T> &other)
 {
     if (numOfRows != other.getNumOfRows() || numOfCols != other.getNumOfCols())
         return *this;
 
-    Matrix ans(numOfRows, numOfCols);
+    Matrix<T> ans(numOfRows, numOfCols);
     for (size_t i = 0; i < numOfRows; i++)
         for (size_t j = 0; j < numOfCols; j++)
             ans.setElement(i, j, elements[i][j] || other.getElement(i, j));
@@ -548,24 +588,26 @@ Matrix Matrix::operator||(Matrix &other)
 /*----------------------------OTHER BINARY OPERATORS--------------------------*/
 
 
-Matrix Matrix::operator<<(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator<<(Matrix<T> &other)
 {
     // right concatenation
     if (numOfRows != other.getNumOfRows()) return *this;
 
-    Matrix ans(numOfRows, numOfCols + other.getNumOfCols());
+    Matrix<T> ans(numOfRows, numOfCols + other.getNumOfCols());
     ans.setSubset(0, 0, *this);
     ans.setSubset(0, numOfCols, other);
     return ans;
 }
 
 
-Matrix Matrix::operator>>(Matrix &other)
+template <class T>
+Matrix<T> Matrix<T>::operator>>(Matrix<T> &other)
 {
     // bottom concatenation
     if (numOfCols != other.getNumOfCols()) return *this;
 
-    Matrix ans(numOfRows + other.getNumOfRows(), numOfCols);
+    Matrix<T> ans(numOfRows + other.getNumOfRows(), numOfCols);
     ans.setSubset(0, 0, *this);
     ans.setSubset(numOfRows, 0, other);
     return ans;
