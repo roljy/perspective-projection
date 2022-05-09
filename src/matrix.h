@@ -11,8 +11,8 @@ class Matrix
 {
 private:
     std::vector< std::vector<T> > elements;
-    size_t numOfRows;
-    size_t numOfCols;
+    size_t rows;
+    size_t cols;
 
 public:
     // constructors
