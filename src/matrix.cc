@@ -144,6 +144,67 @@ int Matrix<T>::setSubset(size_t rowStart, size_t colStart, Matrix<T> &values)
 
 
 template <class T>
+size_t Matrix<T>::getNumOfRows() { return rows; }
+
+
+template <class T>
+size_t Matrix<T>::getNumOfCols() { return cols; }
+
+
+template <class T>
+T Matrix<T>::determinant()
+{
+    if (rows != cols) return 0;
+    
+    switch (rows)
+    {
+    case 0:
+        return 0;
+    case 1:
+        return elements[0][0];
+    case 2:
+        return elements[0][0]*elements[1][1] - elements[0][1]*elements[1][0];
+    default:
+        T ans = 0;
+        for (size_t j = 0; j < cols; j++)
+        {
+            Matrix<T> leftRemaining = getSubset(1, 0, rows, j);
+            Matrix<T> rightRemaining = getSubset(1, j+1, rows, cols);
+            Matrix<T> remaining = leftRemaining << rightRemaining;
+            T currentVal = elements[0][j];
+            ans += (j%2 ? -currentVal : currentVal) * remaining.determinant();
+        }
+        return ans;
+    }
+}
+
+
+template <class T>
+Matrix<T> Matrix<T>::transpose()
+{
+    Matrix<T> ans(cols, rows);
+    for (size_t j = 0; j < rows; j++)
+        ans.setCol(j, elements[j]);
+    return ans;
+}
+
+
+template <class T>
+Matrix<T> Matrix<T>::absolute()
+{
+    Matrix<T> ans = *this;
+    for (size_t i = 0; i < rows; i++)
+        for (size_t j = 0; j < cols; j++)
+            if (elements[i][j] < 0)
+                ans.setElement(-elements[i][j]);
+    return ans;
+}
+
+
+/*---------------------------DIFFICULT FUNDAMENTALS---------------------------*/
+
+
+template <class T>
 void Matrix<T>::print(unsigned int precision)
 {
     if (!rows || !cols) return;
@@ -206,59 +267,14 @@ void Matrix<T>::print(unsigned int precision)
 
 
 template <class T>
-size_t Matrix<T>::getNumOfRows() { return rows; }
-
-
-template <class T>
-size_t Matrix<T>::getNumOfCols() { return cols; }
-
-
-template <class T>
-T Matrix<T>::determinant()
+template <class U> Matrix<U> Matrix<T>::cast()
 {
-    if (rows != cols) return 0;
-    
-    switch (rows)
-    {
-    case 0:
-        return 0;
-    case 1:
-        return elements[0][0];
-    case 2:
-        return elements[0][0]*elements[1][1] - elements[0][1]*elements[1][0];
-    default:
-        T ans = 0;
-        for (size_t j = 0; j < cols; j++)
-        {
-            Matrix<T> leftRemaining = getSubset(1, 0, rows, j);
-            Matrix<T> rightRemaining = getSubset(1, j+1, rows, cols);
-            Matrix<T> remaining = leftRemaining << rightRemaining;
-            T currentVal = elements[0][j];
-            ans += (j%2 ? -currentVal : currentVal) * remaining.determinant();
-        }
-        return ans;
-    }
-}
+    Matrix<U> ans(rows, cols);
 
-
-template <class T>
-Matrix<T> Matrix<T>::transpose()
-{
-    Matrix<T> ans(cols, rows);
-    for (size_t j = 0; j < rows; j++)
-        ans.setCol(j, elements[j]);
-    return ans;
-}
-
-
-template <class T>
-Matrix<T> Matrix<T>::absolute()
-{
-    Matrix<T> ans = *this;
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
-            if (elements[i][j] < 0)
-                ans.setElement(-elements[i][j]);
+            ans.setElement(i, j, static_cast<U>(elements[i][j]));
+
     return ans;
 }
 

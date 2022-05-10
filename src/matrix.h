@@ -33,12 +33,15 @@ public:
     int setSubset(size_t rowStart, size_t colStart, Matrix<T> &values);
 
     // basic matrix properties/actions
-    void print(unsigned int precision = 0);
     size_t getNumOfRows();
     size_t getNumOfCols();
     T determinant();
     Matrix<T> transpose();
     Matrix<T> absolute();
+
+    // difficult fundamentals
+    void print(unsigned int precision = 0);
+    template <class U = double> Matrix<U> cast();
 
     // logical functions
     bool any();
