@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 #include <numeric>
 #include "matrix.h"
 
@@ -18,7 +19,7 @@ Matrix<T>::Matrix()
 {
     this->rows = 0;
     this->cols = 0;
-    elements = std::vector< std::vector<T> > ( this->rows,
+    this->elements = std::vector< std::vector<T> > ( this->rows,
         std::vector<T> (this->cols, 0) );
 }
 
@@ -29,12 +30,12 @@ Matrix<T>::Matrix(size_t rows, size_t cols, T value)
     this->rows = rows;
     this->cols = cols;
 
-    elements.resize(rows);
+    this->elements.resize(rows);
     for (size_t i = 0; i < rows; i++)
     {
-        elements[i].resize(cols);
+        this->elements[i].resize(cols);
         for (size_t j = 0; j < cols; j++)
-            elements[i][j] = value;
+            this->elements[i][j] = value;
     }
 }
 
@@ -147,6 +148,7 @@ void Matrix<T>::print(unsigned int precision)
 {
     if (!rows || !cols) return;
 
+    // determine the value with the widest integer part
     std::vector<T> maxVals = max();
     std::vector<T> minVals = min();
     T maxVal = *std::max_element(maxVals.begin(), maxVals.end());
@@ -156,21 +158,48 @@ void Matrix<T>::print(unsigned int precision)
         if ( (maxVal < 0) || ((minVal < 0 ? -minVal : minVal) * 10 > maxVal) )
             maxVal = minVal;
     }
-
     T absMax = maxVal < 0 ? -maxVal : maxVal;
-    unsigned int width = 1;
+
+    // determine the width of the widest number
+    unsigned int maxWidth = 1;
     while (absMax >= 10)
     {
         absMax /= 10;
-        width++;  // each place value greater than ones
+        maxWidth++;  // each place value greater than ones
     }
-    if (maxVal < 0) width++;  // negative sign
-    width += precision + (precision ? 1 : 0);  // decimal point and after
+    if (maxVal < 0) maxWidth++;  // negative sign
+    maxWidth += precision + (precision ? 1 : 0);  // decimal point and after
 
+    // loop to print each value
     for (size_t i = 0; i < rows; i++)
     {
         for (size_t j = 0; j < cols; j++)
-            printf(" %*.*f ", width, precision, elements[i][j]);
+        {
+            // determine the width of the current value
+            T absVal = elements[i][j] < 0 ? -elements[i][j] : elements[i][j];
+            unsigned int width = 1;
+            while (absVal >= 10)
+            {
+                absVal /= 10;
+                width++;
+            }
+            if (elements[i][j] < 0) width++;
+            width += precision + (precision ? 1 : 0);
+
+            // print pre-space
+            std::cout << " ";
+
+            // print left-padding to match widest element
+            for (unsigned int i = 0; i < maxWidth - width; i++)
+                std::cout << " ";
+
+            // print number with correct precision
+            std::cout << std::fixed <<
+                std::setprecision(precision) << elements[i][j];
+
+            // print post-space
+            std::cout << " ";
+        }
         std::cout << std::endl;
     }
 }
@@ -228,8 +257,8 @@ Matrix<T> Matrix<T>::absolute()
     Matrix<T> ans = *this;
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
-            ans.setElement(i, j,
-                elements[i][j] < 0 ? -elements[i][j] : elements[i][j]);
+            if (elements[i][j] < 0)
+                ans.setElement(-elements[i][j]);
     return ans;
 }
 
@@ -356,9 +385,9 @@ Matrix<T> Matrix<T>::operator-()
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator!()
+Matrix<bool> Matrix<T>::operator!()
 {
-    Matrix<T> ans = *this;
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, !elements[i][j]);
@@ -479,12 +508,12 @@ Matrix<T> Matrix<T>::operator->*(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator==(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator==(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] == other.getElement(i, j));
@@ -493,12 +522,12 @@ Matrix<T> Matrix<T>::operator==(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator!=(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator!=(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] != other.getElement(i, j));
@@ -507,12 +536,12 @@ Matrix<T> Matrix<T>::operator!=(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator<(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator<(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] < other.getElement(i, j));
@@ -521,12 +550,12 @@ Matrix<T> Matrix<T>::operator<(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator<=(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator<=(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] <= other.getElement(i, j));
@@ -535,12 +564,12 @@ Matrix<T> Matrix<T>::operator<=(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator>(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator>(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] > other.getElement(i, j));
@@ -549,12 +578,12 @@ Matrix<T> Matrix<T>::operator>(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator>=(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator>=(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] >= other.getElement(i, j));
@@ -563,12 +592,12 @@ Matrix<T> Matrix<T>::operator>=(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator&&(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator&&(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] && other.getElement(i, j));
@@ -577,12 +606,12 @@ Matrix<T> Matrix<T>::operator&&(Matrix<T> &other)
 
 
 template <class T>
-Matrix<T> Matrix<T>::operator||(Matrix<T> &other)
+Matrix<bool> Matrix<T>::operator||(Matrix<T> &other)
 {
     if (rows != other.getNumOfRows() || cols != other.getNumOfCols())
         return *this;
 
-    Matrix<T> ans(rows, cols);
+    Matrix<bool> ans(rows, cols);
     for (size_t i = 0; i < rows; i++)
         for (size_t j = 0; j < cols; j++)
             ans.setElement(i, j, elements[i][j] || other.getElement(i, j));

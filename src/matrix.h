@@ -23,22 +23,22 @@ public:
     T getElement(size_t row, size_t col);
     std::vector<T> getRow(size_t row);
     std::vector<T> getCol(size_t col);
-    Matrix getSubset(size_t rowStart, size_t colStart,
+    Matrix<T> getSubset(size_t rowStart, size_t colStart,
         size_t rowEnd, size_t colEnd);
 
     // element setters
     int setElement(size_t row, size_t col, T value);
     int setRow(size_t row, std::vector<T> &values);
     int setCol(size_t col, std::vector<T> &values);
-    int setSubset(size_t rowStart, size_t colStart, Matrix &values);
+    int setSubset(size_t rowStart, size_t colStart, Matrix<T> &values);
 
     // basic matrix properties/actions
     void print(unsigned int precision = 0);
     size_t getNumOfRows();
     size_t getNumOfCols();
     T determinant();
-    Matrix transpose();
-    Matrix absolute();
+    Matrix<T> transpose();
+    Matrix<T> absolute();
 
     // logical functions
     bool any();
@@ -51,32 +51,32 @@ public:
     std::vector<T> prod(int colwise = true);
 
     // unary operator overloading
-    Matrix operator+();
-    Matrix operator-();
-    Matrix operator!();
+    Matrix<T> operator+();
+    Matrix<T> operator-();
+    Matrix<bool> operator!();
 
     // binary arithmetic operator overloading
-    Matrix operator+(Matrix &other);
-    Matrix operator-(Matrix &other);
-    Matrix operator*(Matrix &other);
-    Matrix operator*(T scalar);
-    Matrix operator/(Matrix &other);
-    Matrix operator/(T scalar);
-    Matrix operator->*(Matrix &other);
+    Matrix<T> operator+(Matrix &other);
+    Matrix<T> operator-(Matrix &other);
+    Matrix<T> operator*(Matrix &other);
+    Matrix<T> operator*(T scalar);
+    Matrix<T> operator/(Matrix &other);
+    Matrix<T> operator/(T scalar);
+    Matrix<T> operator->*(Matrix &other);
 
     // binary logical operator overloading
-    Matrix operator==(Matrix &other);
-    Matrix operator!=(Matrix &other);
-    Matrix operator<(Matrix &other);
-    Matrix operator<=(Matrix &other);
-    Matrix operator>(Matrix &other);
-    Matrix operator>=(Matrix &other);
-    Matrix operator&&(Matrix &other);
-    Matrix operator||(Matrix &other);
+    Matrix<bool> operator==(Matrix &other);
+    Matrix<bool> operator!=(Matrix &other);
+    Matrix<bool> operator<(Matrix &other);
+    Matrix<bool> operator<=(Matrix &other);
+    Matrix<bool> operator>(Matrix &other);
+    Matrix<bool> operator>=(Matrix &other);
+    Matrix<bool> operator&&(Matrix &other);
+    Matrix<bool> operator||(Matrix &other);
 
     // other binary operator overloading
-    Matrix operator<<(Matrix &other);
-    Matrix operator>>(Matrix &other);
+    Matrix<T> operator<<(Matrix &other);
+    Matrix<T> operator>>(Matrix &other);
 };
 
 #include "matrix.cc"
