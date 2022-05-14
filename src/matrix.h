@@ -48,10 +48,10 @@ public:
     bool all();
 
     // helpful column/row info functions
-    std::vector<T> min(int colwise = true);
-    std::vector<T> max(int colwise = true);
-    std::vector<T> sum(int colwise = true);
-    std::vector<T> prod(int colwise = true);
+    std::vector<T> min(bool colwise = true);
+    std::vector<T> max(bool colwise = true);
+    std::vector<T> sum(bool colwise = true);
+    std::vector<T> prod(bool colwise = true);
 
     // unary operator overloading
     Matrix<T> operator+();

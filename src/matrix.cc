@@ -308,7 +308,7 @@ bool Matrix<T>::all()
 
 
 template <class T>
-std::vector<T> Matrix<T>::min(int colwise)
+std::vector<T> Matrix<T>::min(bool colwise)
 {
     std::vector<T> ans = colwise ? getRow(0) : getCol(0);
     
@@ -326,7 +326,7 @@ std::vector<T> Matrix<T>::min(int colwise)
 
 
 template <class T>
-std::vector<T> Matrix<T>::max(int colwise)
+std::vector<T> Matrix<T>::max(bool colwise)
 {
     std::vector<T> ans = colwise ? getRow(0) : getCol(0);
     
@@ -344,7 +344,7 @@ std::vector<T> Matrix<T>::max(int colwise)
 
 
 template <class T>
-std::vector<T> Matrix<T>::sum(int colwise)
+std::vector<T> Matrix<T>::sum(bool colwise)
 {
     std::vector<T> ans( colwise ? cols : rows, 0 );
     
@@ -362,7 +362,7 @@ std::vector<T> Matrix<T>::sum(int colwise)
 
 
 template <class T>
-std::vector<T> Matrix<T>::prod(int colwise)
+std::vector<T> Matrix<T>::prod(bool colwise)
 {
     std::vector<T> ans( colwise ? cols : rows, 1 );
     
